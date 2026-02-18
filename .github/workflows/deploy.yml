@@ -1,4 +1,4 @@
-name: CI-CD LAMP Docker App
+name: CD - Deploy CRUD App to AWS
 
 on:
   push:
@@ -6,29 +6,8 @@ on:
       - main
 
 jobs:
-  build_and_push:
-    name: Build & Push Docker Image
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build Docker image
-        run: docker build -t ygutierrezm05/actividad61-aplicacion-crud-php:latest .
-
-      - name: Push Docker image
-        run: docker push ygutierrezm05/actividad61-aplicacion-crud-php:latest
-
   deploy:
     name: Deploy to AWS Server
-    needs: build_and_push
     runs-on: ubuntu-latest
 
     steps:
