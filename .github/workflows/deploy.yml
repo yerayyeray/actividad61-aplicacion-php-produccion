@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
+            cd ~/repositorios/actividad61-aplicacion-php-produccion
+            docker compose down
             docker pull ygutierrezm05/actividad61-aplicacion-crud-php:latest
-            docker stop lamp-app || true
-            docker rm lamp-app || true
-            docker run -d --name lamp-app -p 8080:80 ygutierrezm05/actividad61-aplicacion-crud-php:latest
+            docker compose up -d
