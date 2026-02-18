@@ -1,45 +1,45 @@
-name: CI/CD Pipeline - CRUD PHP
+name: CI-CD LAMP Docker App
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build_and_push:
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout código
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Login en DockerHub
-        uses: docker/login-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build de la imagen
-        run: docker build -t ${{ secrets.DOCKER_USER }}/crud-php:latest .
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USER }}/lamp-app:latest .
 
-      - name: Push a DockerHub
-        run: docker push ${{ secrets.DOCKER_USER }}/crud-php:latest
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USER }}/lamp-app:latest
 
   deploy:
+    name: Deploy to AWS Server
+    needs: build_and_push
     runs-on: ubuntu-latest
-    needs: build-and-push
+
     steps:
-      - name: Despliegue en AWS mediante SSH
-        uses: appleboy/ssh-action@master
+      - name: Connect via SSH and deploy
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            # Parar el contenedor anterior si existe
-            sudo docker stop crud-app || true
-            sudo docker rm crud-app || true
-            # Limpiar imágenes antiguas para no llenar el disco
-            sudo docker image prune -f
-            # Descarga de la nueva imagen (PULL)
-            sudo docker pull ${{ secrets.DOCKER_USER }}/crud-php:latest
-            # Ejecución (RUN) - Recuerda usar el puerto 8080 que configuramos para el Proxy
-            sudo docker run -d --name crud-app -p 8080:80 ${{ secrets.DOCKER_USER }}/crud-php:latest
+            docker pull ${{ secrets.DOCKERHUB_USER }}/lamp-app:latest
+            docker stop lamp-app || true
+            docker rm lamp-app || true
+            docker run -d --name lamp-app -p 80:80 ${{ secrets.DOCKERHUB_USER }}/lamp-app:latest
