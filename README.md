@@ -15,4 +15,3 @@ Contiene lo siguiente:
 2. *mariadb*: Sistema gestor de base de datos en MariaDB
 
 
-
