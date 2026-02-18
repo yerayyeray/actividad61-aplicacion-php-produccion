@@ -53,3 +53,4 @@ Formularios: Deben incluir campos de texto, numéricos y combos de opciones (sel
 Validación: Control de duplicados en el campo UNIQUE antes de insertar.
 
 Estilos: Uso obligatorio de Bootstrap y logotipos relacionados con Project Zomboid.
+
