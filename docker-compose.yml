@@ -1,24 +1,9 @@
-name: CD - Deploy CRUD App to AWS
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    name: Deploy to AWS Server
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Connect via SSH and deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.AWS_HOST }}
-          username: ${{ secrets.AWS_USER }}
-          key: ${{ secrets.AWS_SSH_KEY }}
-          script: |
-            docker pull ygutierrezm05/actividad61-aplicacion-crud-php:latest
-            docker stop lamp-app || true
-            docker rm lamp-app || true
-            docker run -d --name lamp-app -p 80:80 ygutierrezm05/actividad61-aplicacion-crud-php:latest
+with:
+  host: ${{ secrets.AWS_HOST }}
+  username: ${{ secrets.AWS_USER }}
+  key: ${{ secrets.AWS_SSH_KEY }}
+  script: |
+    docker pull ygutierrezm05/actividad61-aplicacion-crud-php:latest
+    docker stop lamp-app || true
+    docker rm lamp-app || true
+    docker run -d --name lamp-app -p 80:80 ygutierrezm05/actividad61-aplicacion-crud-php:latest
