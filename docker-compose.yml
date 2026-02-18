@@ -5,9 +5,9 @@
 services: 
 # Servicio 1: aplicación CRUD dockerizada. Utiliza la imagen construida en la fase de desarrollo : lumigv/lamp-crud-app:latest
   apache-php-crud:
-    image: lumigv/lamp-crud-app:latest
+    image: ygutierrezm05/actividad61-aplicacion-crud-php:latest
     ports: 
-      - 80:80
+      - 8080:80
     environment: 
       - MARIADB_HOST=mariadb
       - MARIADB_DATABASE=${DATABASE}
@@ -15,13 +15,13 @@ services:
       - MARIADB_PASSWORD=${PASSWORD}  
 # Controla el orden inicio de los servicios      
     depends_on:
-      - mariadb
+      - db
 # Definimos una política de reinicio del servicio: el contenedor se reinicia cada vez que se detiene por cualquier motivo, excepto cuando se detiene de forma manual (explícita)
 # Recomendable en entornos de producción en un único servidor.
     restart: always      
 
 # Servicio 2: mariadb 
-  mariadb:
+  db:
     image: mariadb
     ports:
       - 3306:3306
